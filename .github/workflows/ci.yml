@@ -5,7 +5,7 @@ on:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
-  workflow_dispatch:  # позволяет запускать вручную
+  workflow_dispatch:
 
 jobs:
   test:
@@ -28,18 +28,18 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-      - name: Install browsers (Firefox & Chrome)
+      - name: Install Chrome
         run: |
           sudo apt-get update
-          sudo apt-get install -y firefox chromium-browser
+          sudo apt-get install -y google-chrome-stable
 
       - name: Run tests with Maven
-        run: mvn clean test -Dheadless=true
+        run: mvn clean test -Dheadless=true -Dbrowser=chrome
         env:
           REQRES_API_KEY: ${{ secrets.REQRES_API_KEY }}
 
       - name: Generate Allure Report
-        if: always()  # генерируем даже при падении тестов
+        if: always()
         run: mvn allure:report
 
       - name: Upload Allure Report as artifact

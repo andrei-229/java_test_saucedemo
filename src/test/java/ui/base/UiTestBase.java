@@ -2,13 +2,14 @@ package ui.base;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.openqa.selenium.WebDriver;
+
 import ui.pages.LoginPage;
 import utils.WebDriverFactory;
 
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
-
+// @ExtendWith(AllureScreenshotExtension.class)
 @Execution(ExecutionMode.CONCURRENT)
 public class UiTestBase {
     protected WebDriver driver;
@@ -18,7 +19,9 @@ public class UiTestBase {
 
     @BeforeEach
     public void setUp() {
-        driver = WebDriverFactory.createDriver();
+        // Получаем браузер из системного свойства, по умолчанию firefox
+        String browser = System.getProperty("browser", "firefox");
+        driver = WebDriverFactory.createDriver(browser);
         loginPage = new LoginPage(driver);
         loginPage.open();
     }
