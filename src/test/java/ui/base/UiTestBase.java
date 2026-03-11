@@ -2,15 +2,13 @@ package ui.base;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.openqa.selenium.WebDriver;
 
 import ui.pages.LoginPage;
 import utils.WebDriverFactory;
 
 // @ExtendWith(AllureScreenshotExtension.class)
-@Execution(ExecutionMode.CONCURRENT)
+// @Execution(ExecutionMode.CONCURRENT)
 public class UiTestBase {
     protected WebDriver driver;
     protected LoginPage loginPage;
