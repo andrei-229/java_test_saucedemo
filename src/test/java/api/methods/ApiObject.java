@@ -6,6 +6,7 @@ import static io.restassured.RestAssured.given;
 
 import java.util.Map;
 
+import io.qameta.allure.Step;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.filter.log.LogDetail;
@@ -34,32 +35,36 @@ public class ApiObject {
     }
 
 
+    @Step("GET /users?page={page}")
     public Response getUsersPage(int page) {
         return given()
                 .spec(requestSpec)
                 .queryParam("page", page)
-        .when()
+                .when()
                 .get("/users");
     }
 
     // 2. Получить одного пользователя по ID
+    @Step("GET /users/{id}")
     public Response getUserById(int id) {
         return given()
                 .spec(requestSpec)
-        .when()
+                .when()
                 .get("/users/{id}", id);
     }
 
     // 3. Создать нового пользователя (принимает тело в виде Map)
+    @Step("POST /users с данными: {userData}")
     public Response createUser(Map<String, Object> userData) {
         return given()
                 .spec(requestSpec)
                 .body(userData)
-        .when()
+                .when()
                 .post("/users");
     }
 
     // 4. Полностью обновить пользователя (PUT)
+    @Step("PUT /users/{id} с данными: {userData}")
     public Response updateUser(int id, Map<String, Object> userData) {
         return given()
                 .spec(requestSpec)
