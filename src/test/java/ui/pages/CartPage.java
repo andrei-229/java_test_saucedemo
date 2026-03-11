@@ -37,5 +37,33 @@ public class CartPage {
             throw new Exception("IndexOutOfBoundsException");
         }
     }
+    public int getItemCount() {
+    WebElement cartList = driver.findElement(By.className("cart_list"));
+    return cartList.findElements(By.className("cart_item")).size();
+    }
+
+    // Удалить товар по индексу (0-based)
+    public void removeItem(int index) throws Exception {
+        WebElement cartList = driver.findElement(By.className("cart_list"));
+        List<WebElement> items = cartList.findElements(By.className("cart_item"));
+        if (index >= items.size()) {
+            throw new Exception("IndexOutOfBoundsException");
+        }
+        WebElement removeButton = items.get(index).findElement(By.tagName("button"));
+        if (!"Remove".equals(removeButton.getText())) {
+            throw new Exception("Button text is not 'Remove'");
+        }
+        removeButton.click();
+    }
+
+    // Перейти к оформлению заказа
+    public void clickCheckout() {
+        driver.findElement(By.id("checkout")).click();
+    }
+
+    // Вернуться к покупкам
+    public void clickContinueShopping() {
+        driver.findElement(By.id("continue-shopping")).click();
+    }
 
 }

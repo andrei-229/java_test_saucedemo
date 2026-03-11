@@ -101,4 +101,16 @@ public class InventoryPage {
     public String get_name_item(WebElement item) {
         return item.findElement(By.className("inventory_item_name")).getText();
     }
+
+    public int getCartBadgeCount() {
+    List<WebElement> badges = driver.findElements(By.className("shopping_cart_badge"));
+    return badges.isEmpty() ? 0 : Integer.parseInt(badges.get(0).getText());
+    }
+
+    // Добавить несколько товаров по индексам
+    public void addItemsToCart(int... indices) throws Exception {
+        for (int index : indices) {
+            add_to_cart_n(index);
+        }
+    }
 }
