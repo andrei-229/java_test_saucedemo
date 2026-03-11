@@ -1,16 +1,20 @@
 package ui.pages;
 
-import io.qameta.allure.Step;
+import java.time.Duration;
+import java.util.List;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import java.util.List;
+
+import io.qameta.allure.Step;
 
 public class CartPage {
     WebDriver driver;
 
     public CartPage(WebDriver driver) {
         this.driver = driver;
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
     }
 
     @Step("Получить название товара №{n} в корзине")

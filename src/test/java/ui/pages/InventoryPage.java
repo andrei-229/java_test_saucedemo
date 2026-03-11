@@ -1,5 +1,6 @@
 package ui.pages;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,6 +8,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import io.qameta.allure.Step;
 
@@ -17,6 +19,15 @@ public class InventoryPage {
     public InventoryPage(WebDriver driver) {
         this.driver = driver;
     }
+
+    @Step("Ожидать значение счётчика корзины: {expected}")
+public void waitForCartBadgeCount(int expected) {
+    new WebDriverWait(driver, Duration.ofSeconds(5))
+        .until(d -> {
+            List<WebElement> badges = d.findElements(By.className("shopping_cart_badge"));
+            return !badges.isEmpty() && Integer.parseInt(badges.get(0).getText()) == expected;
+        });
+}
 
     @Step("Получить название товара №{n}")
     public String get_n_element_name(int n) throws Exception {
@@ -53,6 +64,8 @@ public class InventoryPage {
             throw new Exception("NotFoundButton");
         }
         button.click();
+        // new WebDriverWait(driver, ofSeconds(5))
+        // .until(ExpectedConditions.textToBePresentInElement(button, "Remove"));
     }
 
     @Step("Перейти в корзину")

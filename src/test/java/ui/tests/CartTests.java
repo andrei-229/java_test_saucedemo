@@ -1,11 +1,16 @@
 package ui.tests;
 
-import org.junit.jupiter.api.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+
 import ui.base.UiTestBase;
 import ui.pages.CartPage;
 import ui.pages.InventoryPage;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("ui")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -17,7 +22,7 @@ public class CartTests extends UiTestBase {
     void setUpCart() {
         login();
         inventoryPage = new InventoryPage(driver);
-        cartPage = new CartPage(driver);
+        
     }
 
     @Test
@@ -26,6 +31,7 @@ public class CartTests extends UiTestBase {
         inventoryPage.add_to_cart_n(0);
         inventoryPage.click_cart();
 
+        cartPage = new CartPage(driver);
         assertEquals(1, cartPage.getItemCount());
         cartPage.removeItem(0);
         assertEquals(0, cartPage.getItemCount());
@@ -35,9 +41,11 @@ public class CartTests extends UiTestBase {
     @Order(2)
     void testCartBadgeUpdates() throws Exception {
         inventoryPage.addItemsToCart(0, 1);
+        inventoryPage.waitForCartBadgeCount(2);
         assertEquals(2, inventoryPage.getCartBadgeCount());
 
         inventoryPage.click_cart();
+        cartPage = new CartPage(driver); 
         cartPage.removeItem(0);
         cartPage.clickContinueShopping();
 
