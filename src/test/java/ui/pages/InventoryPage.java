@@ -1,12 +1,14 @@
 package ui.pages;
 
-import io.qameta.allure.Step;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
-import java.util.ArrayList;
-import java.util.List;
+
+import io.qameta.allure.Step;
 
 public class InventoryPage {
     private WebDriver driver;
@@ -63,4 +65,31 @@ public class InventoryPage {
         List<WebElement> badges = driver.findElements(By.className("shopping_cart_badge"));
         return badges.isEmpty() ? 0 : Integer.parseInt(badges.get(0).getText());
     }
+
+    @Step("Добавить товары с индексами {indices} в корзину")
+    public void addItemsToCart(int... indices) throws Exception {
+        for (int index : indices) {
+            add_to_cart_n(index);
+        }
+    }
+    public List<String> get_str_list() {
+    List<WebElement> elements = driver.findElements(items);
+    List<String> ans = new ArrayList<>();
+    for (WebElement element : elements) {
+        String text = element.findElement(By.className("inventory_item_name")).getText();
+        ans.add(text);
+    }
+    return ans;
+}
+
+public List<Float> get_float_list() {
+    List<WebElement> elements = driver.findElements(items);
+    List<Float> ans = new ArrayList<>();
+    for (WebElement element : elements) {
+        String priceText = element.findElement(By.className("inventory_item_price")).getText();
+        Float price = Float.parseFloat(priceText.replaceAll("[^0-9.]", ""));
+        ans.add(price);
+    }
+    return ans;
+}
 }
