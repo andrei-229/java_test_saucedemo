@@ -59,16 +59,32 @@ public void waitForCartBadgeCount(int expected) {
     }
 
     @Step("Добавить товар №{n} в корзину")
-    public void add_to_cart_n(int n) throws Exception {
-        WebElement button = driver.findElements(items).get(n).findElement(By.tagName("button"));
-        if (!button.getText().equals("Add to cart")) {
-            throw new Exception("NotFoundButton");
-        }
-        button.click();
-        button = driver.findElements(items).get(n).findElement(By.tagName("button"));
-        new WebDriverWait(driver, Duration.ofSeconds(5))
-        .until(ExpectedConditions.textToBePresentInElement(button, "Remove"));
+public void add_to_cart_n(int n) throws Exception {
+    List<WebElement> itemsList = driver.findElements(items);
+    if (n >= itemsList.size()) {
+        throw new Exception("IndexOutOfBoundsException");
     }
+    WebElement item = itemsList.get(n);
+    WebElement button = item.findElement(By.tagName("button"));
+
+    // Проверяем, что кнопка действительно имеет текст "Add to cart"
+    if (!button.getText().equals("Add to cart")) {
+        throw new Exception("NotFoundButton: ожидалась кнопка 'Add to cart', но найдено: " + button.getText());
+    }
+
+    // Ожидаем, что кнопка станет кликабельной
+    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+    wait.until(ExpectedConditions.elementToBeClickable(button)).click();
+
+    // После клика ожидаем, что текст кнопки изменится на "Remove"
+    // Важно: после клика кнопка может быть заменена в DOM, поэтому ищем её заново
+    WebElement newButton = wait.until(driver -> {
+        List<WebElement> updatedItems = driver.findElements(items);
+        if (n >= updatedItems.size()) return null;
+        return updatedItems.get(n).findElement(By.tagName("button"));
+    });
+    wait.until(ExpectedConditions.textToBePresentInElement(newButton, "Remove"));
+}
 
     @Step("Перейти в корзину")
     public void click_cart() {
