@@ -7,6 +7,7 @@ import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -64,8 +65,9 @@ public void waitForCartBadgeCount(int expected) {
             throw new Exception("NotFoundButton");
         }
         button.click();
-        // new WebDriverWait(driver, ofSeconds(5))
-        // .until(ExpectedConditions.textToBePresentInElement(button, "Remove"));
+        button = driver.findElements(items).get(n).findElement(By.tagName("button"));
+        new WebDriverWait(driver, Duration.ofSeconds(5))
+        .until(ExpectedConditions.textToBePresentInElement(button, "Remove"));
     }
 
     @Step("Перейти в корзину")
