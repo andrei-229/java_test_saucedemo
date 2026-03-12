@@ -60,27 +60,20 @@ public void waitForCartBadgeCount(int expected) {
 
     @Step("Добавить товар №{n} в корзину")
     public void add_to_cart_n(int n) throws Exception {
-    List<WebElement> itemsList = driver.findElements(items);
-    if (n >= itemsList.size()) {
-        throw new Exception("IndexOutOfBoundsException");
-    }
-    WebElement item = itemsList.get(n);
-    WebElement button = item.findElement(By.tagName("button"));
-    
-    // Проверяем, что кнопка действительно имеет текст "Add to cart"
-    if (!button.getText().equals("Add to cart")) {
-        throw new Exception("NotFoundButton");
-    }
-    
-    button.click();
-    
-    // Ждём, пока текст кнопки изменится на "Remove", заново находя кнопку внутри того же товара
-    new WebDriverWait(driver, Duration.ofSeconds(10))
+        WebElement button = driver.findElements(items).get(n).findElement(By.tagName("button"));
+        if (!button.getText().equals("Add to cart")) {
+            throw new Exception("NotFoundButton");
+        }
+        button.click();
+        
+        // button = driver.findElements(items).get(n).findElement(By.tagName("button"));
+        // System.out.println("Text button: " + button.getText());
+        new WebDriverWait(driver, Duration.ofSeconds(10))
         .until(d -> {
-            WebElement btn = item.findElement(By.tagName("button"));
+            WebElement btn = driver.findElements(items).get(n).findElement(By.tagName("button"));
             return btn.getText().equals("Remove");
         });
-}
+    }
 
     @Step("Перейти в корзину")
     public void click_cart() {
