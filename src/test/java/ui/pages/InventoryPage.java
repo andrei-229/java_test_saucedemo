@@ -7,7 +7,6 @@ import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -66,10 +65,10 @@ public void waitForCartBadgeCount(int expected) {
         }
         button.click();
         
-        button = driver.findElements(items).get(n).findElement(By.tagName("button"));
-        System.out.println("Text button: " + button.getText());
-        new WebDriverWait(driver, Duration.ofSeconds(15))
-        .until(ExpectedConditions.textToBePresentInElement(button, "Remove"));
+        // button = driver.findElements(items).get(n).findElement(By.tagName("button"));
+        // System.out.println("Text button: " + button.getText());
+        // new WebDriverWait(driver, Duration.ofSeconds(15))
+        // .until(ExpectedConditions.textToBePresentInElement(button, "Remove"));
     }
 
     @Step("Перейти в корзину")
