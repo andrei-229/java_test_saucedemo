@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -59,21 +60,26 @@ public void waitForCartBadgeCount(int expected) {
     }
 
     @Step("Добавить товар №{n} в корзину")
-    public void add_to_cart_n(int n) throws Exception {
-        WebElement button = driver.findElements(items).get(n).findElement(By.tagName("button"));
-        if (!button.getText().equals("Add to cart")) {
-            throw new Exception("NotFoundButton");
-        }
-        button.click();
-        
-        // button = driver.findElements(items).get(n).findElement(By.tagName("button"));
-        // System.out.println("Text button: " + button.getText());
-        new WebDriverWait(driver, Duration.ofSeconds(10))
-        .until(d -> {
-            WebElement btn = driver.findElements(items).get(n).findElement(By.tagName("button"));
-            return btn.getText().equals("Remove");
-        });
+public void add_to_cart_n(int n) throws Exception {
+    List<WebElement> itemsList = driver.findElements(items);
+    if (n >= itemsList.size()) {
+        throw new Exception("IndexOutOfBoundsException");
     }
+    WebElement item = itemsList.get(n);
+    WebElement button = item.findElement(By.tagName("button"));
+    if (!button.getText().trim().equalsIgnoreCase("Add to cart")) {
+        throw new Exception("NotFoundButton");
+    }
+    button.click();
+
+    // Ожидание смены текста на "Remove" (игнорируем StaleElementReferenceException)
+    new WebDriverWait(driver, Duration.ofSeconds(15))
+        .ignoring(StaleElementReferenceException.class)
+        .until(d -> {
+            WebElement btn = d.findElements(items).get(n).findElement(By.tagName("button"));
+            return btn.getText().trim().equalsIgnoreCase("Remove");
+        });
+}
 
     @Step("Перейти в корзину")
     public void click_cart() {
