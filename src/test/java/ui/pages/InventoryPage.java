@@ -70,14 +70,19 @@ public void add_to_cart_n(int n) throws Exception {
     if (!button.getText().trim().equalsIgnoreCase("Add to cart")) {
         throw new Exception("NotFoundButton");
     }
+    
+    // Получить текущее значение счётчика корзины перед добавлением
+    List<WebElement> badges = driver.findElements(By.className("shopping_cart_badge"));
+    int currentCount = badges.isEmpty() ? 0 : Integer.parseInt(badges.get(0).getText());
+    int expectedCount = currentCount + 1;
+    
     button.click();
 
-    // Ожидание смены текста на "Remove" (игнорируем StaleElementReferenceException)
+    // Ожидание обновления счётчика корзины (более надёжно чем ждать смены текста кнопки)
     new WebDriverWait(driver, Duration.ofSeconds(15))
-        .ignoring(StaleElementReferenceException.class)
         .until(d -> {
-            WebElement btn = d.findElements(items).get(n).findElement(By.tagName("button"));
-            return btn.getText().trim().equalsIgnoreCase("Remove");
+            List<WebElement> cartBadges = d.findElements(By.className("shopping_cart_badge"));
+            return !cartBadges.isEmpty() && Integer.parseInt(cartBadges.get(0).getText()) == expectedCount;
         });
 }
 
