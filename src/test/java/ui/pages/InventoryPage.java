@@ -7,6 +7,7 @@ import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -59,21 +60,33 @@ public void waitForCartBadgeCount(int expected) {
 
     @Step("Добавить товар №{n} в корзину")
     public void add_to_cart_n(int n) throws Exception {
-        WebElement button = driver.findElements(items).get(n).findElement(By.tagName("button"));
-        if (!button.getText().equals("Add to cart")) {
-            throw new Exception("NotFoundButton");
-        }
-        button.click();
-        
-        // button = driver.findElements(items).get(n).findElement(By.tagName("button"));
-        // System.out.println("Text button: " + button.getText());
-        // new WebDriverWait(driver, Duration.ofSeconds(15))
-        // .until(ExpectedConditions.textToBePresentInElement(button, "Remove"));
+    List<WebElement> itemsList = driver.findElements(items);
+    if (n >= itemsList.size()) {
+        throw new Exception("IndexOutOfBoundsException");
     }
+    WebElement item = itemsList.get(n);
+    WebElement button = item.findElement(By.tagName("button"));
+    
+    // Проверяем, что кнопка действительно имеет текст "Add to cart"
+    if (!button.getText().equals("Add to cart")) {
+        throw new Exception("NotFoundButton");
+    }
+    
+    button.click();
+    
+    // Ждём, пока текст кнопки изменится на "Remove", заново находя кнопку внутри того же товара
+    new WebDriverWait(driver, Duration.ofSeconds(10))
+        .until(d -> {
+            WebElement btn = item.findElement(By.tagName("button"));
+            return btn.getText().equals("Remove");
+        });
+}
 
     @Step("Перейти в корзину")
     public void click_cart() {
         driver.findElement(By.className("shopping_cart_link")).click();
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+        .until(ExpectedConditions.presenceOfElementLocated(By.className("cart_list")));
     }
 
     @Step("Получить значение счётчика корзины")

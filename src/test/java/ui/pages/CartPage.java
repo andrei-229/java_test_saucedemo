@@ -1,6 +1,5 @@
 package ui.pages;
 
-import java.time.Duration;
 import java.util.List;
 
 import org.openqa.selenium.By;
@@ -14,7 +13,7 @@ public class CartPage {
 
     public CartPage(WebDriver driver) {
         this.driver = driver;
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+        // driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
     }
 
     @Step("Получить название товара №{n} в корзине")
