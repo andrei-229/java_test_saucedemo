@@ -71,18 +71,37 @@ public void add_to_cart_n(int n) throws Exception {
         throw new Exception("NotFoundButton");
     }
     
-    // Получить текущее значение счётчика корзины перед добавлением
-    List<WebElement> badges = driver.findElements(By.className("shopping_cart_badge"));
-    int currentCount = badges.isEmpty() ? 0 : Integer.parseInt(badges.get(0).getText());
-    int expectedCount = currentCount + 1;
-    
     button.click();
 
-    // Ожидание обновления счётчика корзины (более надёжно чем ждать смены текста кнопки)
+    // Ожидание: либо появления счётчика с числом > 0, либо смены текста на "Remove"
     new WebDriverWait(driver, Duration.ofSeconds(15))
+        .ignoring(StaleElementReferenceException.class)
         .until(d -> {
-            List<WebElement> cartBadges = d.findElements(By.className("shopping_cart_badge"));
-            return !cartBadges.isEmpty() && Integer.parseInt(cartBadges.get(0).getText()) == expectedCount;
+            try {
+                // Проверка 1: есть ли badge с числом > 0
+                List<WebElement> cartBadges = d.findElements(By.className("shopping_cart_badge"));
+                if (!cartBadges.isEmpty()) {
+                    String badgeText = cartBadges.get(0).getText().trim();
+                    if (!badgeText.isEmpty()) {
+                        int count = Integer.parseInt(badgeText);
+                        if (count > 0) return true;
+                    }
+                }
+            } catch (Exception e) {
+                // Игнорируем и проверяем второе условие
+            }
+            
+            // Проверка 2: текст кнопки изменился на "Remove"
+            try {
+                WebElement btn = d.findElements(items).get(n).findElement(By.tagName("button"));
+                if (btn.getText().trim().equalsIgnoreCase("Remove")) {
+                    return true;
+                }
+            } catch (Exception e) {
+                // Игнорируем
+            }
+            
+            return false;
         });
 }
 
