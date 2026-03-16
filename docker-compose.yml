@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  load-test:
+    build: .
+    container_name: saucedemo-load-test
+    environment:
+      # Количество пользователей, которые будут одновременно нагружать систему
+      USERS: ${USERS:-10}
+      
+      # Время разогрева в секундах (за какое время будут добавлены все пользователи)
+      RAMP_UP: ${RAMP_UP:-30}
+      
+      # Полная длительность теста в секундах
+      DURATION: ${DURATION:-60}
+      
+      # Базовый URL тестируемого приложения
+      BASE_URL: ${BASE_URL:-https://www.saucedemo.com}
+    
+    volumes:
+      # Монтируем директорию для результатов тестов
+      - ./target/gatling:/app/target/gatling
+      - ./allure-results:/app/target/allure-results
+    
+    networks:
+      - test-network
+
+networks:
+  test-network:
+    driver: bridge

@@ -1,0 +1,38 @@
+# Файлы для игнорирования при сборке Docker образа
+
+# IDE
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+
+# Build
+target/
+.m2/
+*.class
+*.jar
+*.war
+*.nar
+*.log
+
+# Git
+.git/
+.gitignore
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test results
+allure-results/
+surefire-reports/
+
+# Node (если используется)
+node_modules/
+.npm/
+
+# Docker
+docker-compose.override.yml
+.env
+.env.local
